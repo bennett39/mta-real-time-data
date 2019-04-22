@@ -4,6 +4,15 @@ import os
 import requests
 
 
+def main():
+    load_dotenv()
+    feed = gtfs_realtime_pb2.FeedMessage()
+    url = ('http://datamine.mta.info/mta_esi.php?key='
+            + os.getenv("API_KEY")
+            + '&feed_id=1')
+    get_feed(feed, url)
+
+
 def get_feed(feed, url):
     response = requests.get(url, allow_redirects=True)
     feed.ParseFromString(response.content)
@@ -12,9 +21,6 @@ def get_feed(feed, url):
             if entity.HasField('trip_update'):
                 f.write(str(entity.trip_update))
 
-load_dotenv()
-feed = gtfs_realtime_pb2.FeedMessage()
-url = ('http://datamine.mta.info/mta_esi.php?key='
-        + os.getenv("API_KEY")
-        + '&feed_id=1')
-get_feed(feed, url)
+
+if __name__ == "__main__":
+    main()
